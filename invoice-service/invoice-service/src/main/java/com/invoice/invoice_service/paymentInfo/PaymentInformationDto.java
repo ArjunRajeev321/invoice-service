@@ -1,4 +1,4 @@
-package com.invoice.invoice_service.dto;
+package com.invoice.invoice_service.paymentInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

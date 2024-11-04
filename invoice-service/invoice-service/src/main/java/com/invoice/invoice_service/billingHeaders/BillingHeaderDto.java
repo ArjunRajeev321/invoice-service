@@ -1,6 +1,7 @@
-package com.invoice.invoice_service.billingHeader.dto;
+package com.invoice.invoice_service.billingHeaders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.invoice.invoice_service.paymentInfo.PaymentInfoDto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +22,8 @@ public class BillingHeaderDto {
 	@JsonProperty("company_id")
 	private String companyId;
 	
-//	@JsonProperty("payment_information")
-//	private PaymentInformationDto paymentInformation;
+	@JsonProperty("payment_information")
+	private PaymentInfoDto paymentInformation;
 	
 
 }

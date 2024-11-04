@@ -1,13 +1,17 @@
-package com.invoice.invoice_service.billingHeader.entity;
+package com.invoice.invoice_service.billingHeaders;
 
 import java.io.Serializable;
-import java.util.Objects;
 
+import com.invoice.invoice_service.paymentInfo.PaymentInformation;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -22,10 +26,15 @@ public class BillingHeader implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2355243953029770915L;
+
+	/**
+	 * 
+	 */
+	
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
 	@SequenceGenerator(sequenceName = "BILL_SEQ", allocationSize = 1, name = "seq")
 	private Long id;
 
@@ -41,21 +50,8 @@ public class BillingHeader implements Serializable{
 	@Column(name = "company_id")
 	private String companyId;
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(billingId, id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		BillingHeader other = (BillingHeader) obj;
-		return Objects.equals(billingId, other.billingId) && Objects.equals(id, other.id);
-	}
+	@ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")
+    private PaymentInformation paymentId;
 
 }
