@@ -1,23 +1,24 @@
 package com.invoice.invoice_service.common;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-
+@EnableWebSecurity
 public class SecurityConfig {
 
-//	@Bean
-//	SecurityFilterChain setFilterChains(HttpSecurity http) throws Exception {
-//		return http.
-//				
-//				authorizeHttpRequests(auth -> {
-//			auth.requestMatchers("/").permitAll();
-//			auth.anyRequest().authenticated();
-//		}).oauth2Client(withDefaults())
-//				.formLogin(withDefaults())
-//				.
-//				
-//				build();
-//	}
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
+		httpSecurity.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(requests -> requests.requestMatchers("/actuator/**").permitAll())
+				.authorizeHttpRequests(requests -> requests.anyRequest().authenticated()).oauth2Login(withDefaults());
+
+		return httpSecurity.build();// Builds the configured SecurityFilterChain.
+	}
 }
