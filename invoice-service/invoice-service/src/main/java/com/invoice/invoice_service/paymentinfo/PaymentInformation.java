@@ -1,4 +1,4 @@
-package com.invoice.invoice_service.paymentInfo;
+package com.invoice.invoice_service.paymentinfo;
 
 import java.io.Serializable;
 

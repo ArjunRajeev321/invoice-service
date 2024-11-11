@@ -1,4 +1,4 @@
-package com.invoice.invoice_service.billing.billingLineInfo;
+package com.invoice.invoice_service.billing.billinglineinfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

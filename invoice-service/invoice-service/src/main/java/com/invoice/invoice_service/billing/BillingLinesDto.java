@@ -1,8 +1,8 @@
 package com.invoice.invoice_service.billing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.invoice.invoice_service.billing.billingLineInfo.BillingLineInfoDto;
-import com.invoice.invoice_service.billing.priceInfo.PriceInformationDto;
+import com.invoice.invoice_service.billing.billinglineinfo.BillingLineInfoDto;
+import com.invoice.invoice_service.billing.priceinfo.PriceInformationDto;
 
 import lombok.Getter;
 import lombok.Setter;

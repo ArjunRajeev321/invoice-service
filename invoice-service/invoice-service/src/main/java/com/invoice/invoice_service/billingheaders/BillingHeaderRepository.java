@@ -1,4 +1,4 @@
-package com.invoice.invoice_service.billingHeaders;
+package com.invoice.invoice_service.billingheaders;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

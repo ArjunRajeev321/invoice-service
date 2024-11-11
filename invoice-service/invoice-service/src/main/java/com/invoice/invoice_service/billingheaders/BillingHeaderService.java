@@ -1,43 +1,57 @@
-package com.invoice.invoice_service.billingHeaders;
+package com.invoice.invoice_service.billingheaders;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.invoice.invoice_service.billing.BillingService;
 import com.invoice.invoice_service.common.RequestDto;
 import com.invoice.invoice_service.common.ResponseWrapper;
-import com.invoice.invoice_service.paymentInfo.PaymentInfoDto;
-import com.invoice.invoice_service.paymentInfo.PaymentInfoRepo;
-import com.invoice.invoice_service.paymentInfo.PaymentInformation;
+import com.invoice.invoice_service.paymentinfo.PaymentInfoDto;
+import com.invoice.invoice_service.paymentinfo.PaymentInfoRepo;
+import com.invoice.invoice_service.paymentinfo.PaymentInformation;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class BillingHeaderService {
 
-	@Autowired
-	private BillingHeaderRepository repository;
+	private final BillingHeaderRepository repository;
 
-	@Autowired
-	private PaymentInfoRepo paymentInfoRepo;
+	private final PaymentInfoRepo paymentInfoRepo;
 
-	@Autowired
-	private BillingService billingService;
+	private final BillingService billingService;
 
-	@Autowired
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
+
+	public BillingHeaderService(BillingHeaderRepository repository, PaymentInfoRepo paymentInfoRepo,
+			BillingService billingService, RestTemplate restTemplate) {
+		this.repository = repository;
+		this.paymentInfoRepo = paymentInfoRepo;
+		this.billingService = billingService;
+		this.restTemplate = restTemplate;
+	}
 
 	@Transactional
 	public ResponseWrapper saveAndProcessData(RequestDto requestDto) {
 		ResponseWrapper wrapper = restTemplate.getForObject("http://localhost:8082/verify", ResponseWrapper.class);
-		if (requestDto != null && wrapper.getStatusCode() == 200) {
+		if (requestDto != null && isValidWrapperResponse(wrapper)) {
 			BillingHeaderDto dto = requestDto.getBillingHeaderDto();
 			PaymentInfoDto paymentInfoDto = requestDto.getBillingHeaderDto().getPaymentInformation();
 			billingService.saveBillings(requestDto);
 			saveBillingHeaders(dto, paymentInfoDto);
 		}
 		return wrapper;
+	}
+
+	private static boolean isValidWrapperResponse(ResponseWrapper wrapper) {
+		return wrapper != null && wrapper.getStatusCode() == 200;
+	}
+
+	public CompletableFuture<String> callExternalService() throws InterruptedException {
+//		TimeUnit.MILLISECONDS.wait(600);
+		return CompletableFuture.completedFuture("TESTING!");
 	}
 
 	private void saveBillingHeaders(BillingHeaderDto dto, PaymentInfoDto paymentInfoDto) {

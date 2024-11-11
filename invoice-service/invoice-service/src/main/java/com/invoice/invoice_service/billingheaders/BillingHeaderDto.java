@@ -1,7 +1,7 @@
-package com.invoice.invoice_service.billingHeaders;
+package com.invoice.invoice_service.billingheaders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.invoice.invoice_service.paymentInfo.PaymentInfoDto;
+import com.invoice.invoice_service.paymentinfo.PaymentInfoDto;
 
 import lombok.Getter;
 import lombok.Setter;

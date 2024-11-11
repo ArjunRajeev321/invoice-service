@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.invoice.invoice_service.billing.billingLineInfo.BillingLineInfoDto;
-import com.invoice.invoice_service.billing.priceInfo.PriceInformationDto;
+import com.invoice.invoice_service.billing.billinglineinfo.BillingLineInfoDto;
+import com.invoice.invoice_service.billing.priceinfo.PriceInformationDto;
 import com.invoice.invoice_service.common.RequestDto;
 
 @Service
@@ -17,9 +17,7 @@ public class BillingService {
 
 	public void saveBillings(RequestDto requestDto) {
 		List<BillingLinesDto> billingLinesDto = requestDto.getBillingLinesDto();
-		billingLinesDto.stream().map(a -> {
-			return buildBillingLine(a);
-		}).forEach(billingRepo::save);
+		billingLinesDto.stream().map(this::buildBillingLine).forEach(billingRepo::save);
 	}
 
 	private BillingLine buildBillingLine(BillingLinesDto a) {

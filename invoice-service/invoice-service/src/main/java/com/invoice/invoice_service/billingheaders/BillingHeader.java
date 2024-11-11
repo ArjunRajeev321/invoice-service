@@ -1,8 +1,8 @@
-package com.invoice.invoice_service.billingHeaders;
+package com.invoice.invoice_service.billingheaders;
 
 import java.io.Serializable;
 
-import com.invoice.invoice_service.paymentInfo.PaymentInformation;
+import com.invoice.invoice_service.paymentinfo.PaymentInformation;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

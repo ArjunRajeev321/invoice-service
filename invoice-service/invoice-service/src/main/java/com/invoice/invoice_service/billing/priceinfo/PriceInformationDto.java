@@ -1,4 +1,4 @@
-package com.invoice.invoice_service.billing.priceInfo;
+package com.invoice.invoice_service.billing.priceinfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.invoice.invoice_service.common.PriceDto;
