@@ -2,6 +2,7 @@ package com.invoice.invoice_service.billingheaders;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,6 +13,7 @@ import com.invoice.invoice_service.paymentinfo.PaymentInfoDto;
 import com.invoice.invoice_service.paymentinfo.PaymentInfoRepo;
 import com.invoice.invoice_service.paymentinfo.PaymentInformation;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -34,6 +36,7 @@ public class BillingHeaderService {
 	}
 
 	@Transactional
+	@CircuitBreaker(name = "verifyService", fallbackMethod = "sendFallBackResponse")
 	public ResponseWrapper saveAndProcessData(RequestDto requestDto) {
 		ResponseWrapper wrapper = restTemplate.getForObject("http://localhost:8082/verify", ResponseWrapper.class);
 		if (requestDto != null && isValidWrapperResponse(wrapper)) {
@@ -41,17 +44,25 @@ public class BillingHeaderService {
 			PaymentInfoDto paymentInfoDto = requestDto.getBillingHeaderDto().getPaymentInformation();
 			billingService.saveBillings(requestDto);
 			saveBillingHeaders(dto, paymentInfoDto);
+		} else if (wrapper == null) {
+			wrapper = wrapMessageNullResponse();
 		}
 		return wrapper;
 	}
 
-	private static boolean isValidWrapperResponse(ResponseWrapper wrapper) {
-		return wrapper != null && wrapper.getStatusCode() == 200;
+	public ResponseWrapper sendFallBackResponse(Exception e) {
+		return new ResponseWrapper(HttpStatus.GATEWAY_TIMEOUT.value(), "DownTime: Under maintainence!");
 	}
 
-	public CompletableFuture<String> callExternalService() throws InterruptedException {
-//		TimeUnit.MILLISECONDS.wait(600);
-		return CompletableFuture.completedFuture("TESTING!");
+	private static ResponseWrapper wrapMessageNullResponse() {
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponse("Unexpected Failure.");
+		responseWrapper.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		return responseWrapper;
+	}
+
+	private static boolean isValidWrapperResponse(ResponseWrapper wrapper) {
+		return wrapper != null && wrapper.getStatusCode() == 200;
 	}
 
 	private void saveBillingHeaders(BillingHeaderDto dto, PaymentInfoDto paymentInfoDto) {

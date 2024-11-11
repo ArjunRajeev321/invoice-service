@@ -3,7 +3,6 @@ package com.invoice.invoice_service.controller;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +13,6 @@ import com.invoice.invoice_service.billingheaders.BillingHeaderService;
 import com.invoice.invoice_service.common.RequestDto;
 import com.invoice.invoice_service.common.ResponseWrapper;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 
 @RestController
@@ -27,15 +25,7 @@ public class InvoiceController {
 		this.headerService = headerService;
 	}
 
-	@GetMapping
-	@TimeLimiter(name = "rateLimiter", fallbackMethod = "timeoutFallbackResponse")
-	public CompletableFuture<String> callExternalService() throws InterruptedException {
-		return headerService.callExternalService();
-
-	}
-
 	@PostMapping
-	@CircuitBreaker(name = "verifyService", fallbackMethod = "sendFallBackResponse")
 	public ResponseWrapper save(@RequestBody RequestDto requestDto) {
 		ResponseWrapper rw = new ResponseWrapper();
 		ResponseWrapper wrapper = headerService.saveAndProcessData(requestDto);
@@ -49,10 +39,6 @@ public class InvoiceController {
 	private void wrapResponse(ResponseWrapper rw, ResponseWrapper wrapper) {
 		rw.setResponse(wrapper.getResponse());
 		rw.setStatusCode(wrapper.getStatusCode());
-	}
-
-	public ResponseWrapper sendFallBackResponse() {
-		return new ResponseWrapper(HttpStatus.GATEWAY_TIMEOUT.value(), "DownTime: Under maintainence!");
 	}
 
 	public CompletableFuture<String> timeoutFallbackResponse() {

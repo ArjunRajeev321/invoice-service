@@ -2,7 +2,6 @@ package com.invoice.invoice_service.billing;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.invoice.invoice_service.billing.billinglineinfo.BillingLineInfoDto;
@@ -12,8 +11,11 @@ import com.invoice.invoice_service.common.RequestDto;
 @Service
 public class BillingService {
 
-	@Autowired
-	private BillingRepo billingRepo;
+	private final BillingRepo billingRepo;
+	
+	public BillingService(BillingRepo billingRepo) {
+		this.billingRepo = billingRepo;
+	}
 
 	public void saveBillings(RequestDto requestDto) {
 		List<BillingLinesDto> billingLinesDto = requestDto.getBillingLinesDto();
