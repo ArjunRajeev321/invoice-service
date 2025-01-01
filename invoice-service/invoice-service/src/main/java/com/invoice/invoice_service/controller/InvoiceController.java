@@ -13,8 +13,6 @@ import com.invoice.invoice_service.billingheaders.BillingHeaderService;
 import com.invoice.invoice_service.common.RequestDto;
 import com.invoice.invoice_service.common.ResponseWrapper;
 
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
-
 @RestController
 @RequestMapping(value = "/invoice")
 public class InvoiceController {
@@ -23,6 +21,12 @@ public class InvoiceController {
 
 	public InvoiceController(BillingHeaderService headerService) {
 		this.headerService = headerService;
+	}
+
+	@GetMapping
+//	@TimeLimiter(name = "rateLimiter", fallbackMethod = "timeoutFallbackResponse")
+	public String callExternalService() {
+		return headerService.callExternalService();
 	}
 
 	@PostMapping
