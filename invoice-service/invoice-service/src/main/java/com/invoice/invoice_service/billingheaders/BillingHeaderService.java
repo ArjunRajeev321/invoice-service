@@ -1,7 +1,5 @@
 package com.invoice.invoice_service.billingheaders;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -63,6 +61,15 @@ public class BillingHeaderService {
 
 	private static boolean isValidWrapperResponse(ResponseWrapper wrapper) {
 		return wrapper != null && wrapper.getStatusCode() == 200;
+	}
+
+	@CircuitBreaker(name = "verifyService", fallbackMethod = "testMe")
+	public String callExternalService() {
+		return restTemplate.getForObject("http://localhost:8082/verify/test", String.class);
+	}
+
+	public String testMe(Exception e) {
+		return "YES!";
 	}
 
 	private void saveBillingHeaders(BillingHeaderDto dto, PaymentInfoDto paymentInfoDto) {
